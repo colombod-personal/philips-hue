@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+coverage/
+*.log
+.env
+.env.*
+# local bridge credentials must never be committed
+hue-credentials*.json
