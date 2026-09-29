@@ -255,6 +255,12 @@ class BridgeSimulator:
     def resources(self) -> list[Resource]:
         return self.index.all()
 
+    @property
+    def open_streams(self) -> int:
+        """Number of clients currently subscribed to the event stream."""
+        with self._lock:
+            return len(self._streams)
+
     def emit(self, event: HueEvent) -> None:
         """Broadcasts an event and applies it to the state."""
         self._apply_and_broadcast(event)

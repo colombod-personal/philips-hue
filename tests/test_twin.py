@@ -107,8 +107,8 @@ def test_recorder_round_trip() -> None:
 
         t = threading.Thread(target=run)
         t.start()
-        time.sleep(0.15)
-        source.replay_start()  # 20 s of timeline at 100x = 200 ms
+        wait_for(lambda: source.open_streams == 1)  # recorder subscribed; now play the 20 s timeline at 100x (200 ms)
+        source.replay_start()
         t.join(10)
         recording = result["rec"]
         assert recording.label == "round trip" and recording.bridge_id == source.bridge_id
