@@ -28,7 +28,7 @@ const USAGE = `hue — Philips Hue command line (device-centric, agent friendly)
 
 Setup
   hue discover [--timeout <ms>] [--no-mdns] [--no-cloud]        Find bridges on the network
-  hue pair <host> [--app-name <n>] [--instance <n>] [--timeout <ms>]  Pair (press the bridge button)
+  hue pair <host> [--port <n>] [--http] [--app-name <n>] [--instance <n>] [--timeout <ms>]  Pair (press the bridge button)
   hue bridges                                                   List stored bridges
   hue forget <bridge-id>                                        Remove stored credentials
 
@@ -69,6 +69,8 @@ export async function main(argv: string[], io: Partial<OutputStreams> = {}): Pro
       help: { type: 'boolean', short: 'h', default: false },
       bridge: { type: 'string' },
       timeout: { type: 'string' },
+      port: { type: 'string' },
+      http: { type: 'boolean', default: false },
       'no-mdns': { type: 'boolean', default: false },
       'no-cloud': { type: 'boolean', default: false },
       'app-name': { type: 'string' },
@@ -101,7 +103,7 @@ export async function main(argv: string[], io: Partial<OutputStreams> = {}): Pro
       case 'discover':
         return await cmdDiscover(ctx, { timeoutMs: num(values['timeout']), mdns: !values['no-mdns'], cloud: !values['no-cloud'] });
       case 'pair':
-        return await cmdPair(ctx, rest[0], { appName: str(values['app-name']), instanceName: str(values['instance']), timeoutMs: num(values['timeout']) });
+        return await cmdPair(ctx, rest[0], { appName: str(values['app-name']), instanceName: str(values['instance']), timeoutMs: num(values['timeout']), port: num(values['port']), http: Boolean(values['http']) });
       case 'bridges':
         return await cmdBridges(ctx);
       case 'forget':
@@ -239,14 +241,21 @@ async function cmdDiscover(ctx: Ctx, opts: { timeoutMs: number | undefined; mdns
   return 0;
 }
 
-async function cmdPair(ctx: Ctx, host: string | undefined, opts: { appName: string | undefined; instanceName: string | undefined; timeoutMs: number | undefined }): Promise<number> {
-  if (!host) throw new Error('Usage: hue pair <host>');
-  const info = await identifyBridge(host);
+async function cmdPair(
+  ctx: Ctx,
+  host: string | undefined,
+  opts: { appName: string | undefined; instanceName: string | undefined; timeoutMs: number | undefined; port: number | undefined; http: boolean },
+): Promise<number> {
+  if (!host) throw new Error('Usage: hue pair <host> [--port <n>] [--http]');
+  const scheme = opts.http ? 'http' : 'https';
+  const info = await identifyBridge(host, { port: opts.port, scheme });
   if (!ctx.json) {
     writeErr(`Found ${info.name ?? 'bridge'} (${info.modelId ?? '?'}, id ${info.id}) at ${host}.\n`);
     writeErr('Press the round link button on the bridge now (waiting up to ' + Math.round((opts.timeoutMs ?? 60000) / 1000) + 's)…\n');
   }
   const creds = await pairBridge(host, {
+    port: opts.port,
+    scheme,
     appName: opts.appName ?? 'hue-cli',
     instanceName: opts.instanceName,
     timeoutMs: opts.timeoutMs,

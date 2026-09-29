@@ -27,3 +27,4 @@ export * from './client.js';
 export * from './color.js';
 export * from './credentials.js';
 export * from './model/index.js';
+export * from './twin/index.js';

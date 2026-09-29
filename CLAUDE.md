@@ -8,7 +8,8 @@ Device-centric Philips Hue SDK (CLIP v2) for agents and applications. MIT licens
 - `packages/cli` — `@hue-sdk/cli`, the `hue` command. Every command has `--json`.
 - `packages/mcp` — `@hue-sdk/mcp`, a stdio MCP server exposing the same model as tools.
 - `skills/hue` — an agent skill (OpenClaw / Claude Code style `SKILL.md`) that teaches an agent to use the CLI.
-- `docs/` — architecture, research notes, security model.
+- `packages/core/src/twin` — the digital twin: `recordBridge()` captures a real bridge into a recording, `BridgeSimulator` replays it locally (`hue-twin record|serve`).
+- `docs/` — architecture, digital twin, research notes, security model.
 
 ## Commands
 
@@ -26,5 +27,5 @@ pnpm typecheck
 - Anything agents consume must be plain JSON: add to `packages/core/src/model/snapshot.ts`, not to class shapes.
 - Errors are `HueError` with a stable `code`; never throw bare strings.
 - Never log or print application keys; the CLI redacts them.
-- Tests must not need real hardware: extend `packages/core/src/test-support/fake-bridge.ts` and `fixtures.ts` instead.
+- Tests must not need real hardware: they run against the digital twin (`packages/core/src/twin/`, `BridgeSimulator`) fed by a recording. Prefer real captures under `recordings/` over the hand-written `sampleRecording()`; extend `fixtures.ts` only for shapes no capture covers yet.
 - No `rejectUnauthorized: false` outside `identify` (which exists to learn the certificate to pin) and the explicit `insecure` option.

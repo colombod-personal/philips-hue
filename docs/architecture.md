@@ -41,9 +41,9 @@ CLIP v2 is resource-centric: a motion sensor is four resources (`motion`, `tempe
 
 `BridgeCredentials` = host + application key + certificate fingerprint (+ optional Entertainment client key). Stored by `FileCredentialStore` (0600 JSON) or any custom `CredentialStore`; overridable via `HUE_*` environment variables. `resolveConnection()` is the single entry point used by the CLI and MCP server.
 
-## Testing
+## Testing: the digital twin
 
-`@hue-sdk/core/test-support` ships `startFakeBridge()`: an in-process HTTPS server with a freshly generated self-signed certificate (like older real bridges) implementing config, pairing (with a virtual link button), CLIP v2 reads/writes and the event stream. All packages test against it; no hardware needed.
+`@hue-sdk/core/twin` ships the twin: `recordBridge()` captures a real bridge (config, certificate, resources, timed events) into a `Recording`, and `BridgeSimulator` serves a recording as a local bridge (HTTPS with a certificate for the recorded bridge id, pairing with a virtual link button, CLIP v2 reads/writes, SSE, timeline replay, control API). `@hue-sdk/core/test-support` wraps it as `startFakeBridge()` for tests. See `docs/digital-twin.md`.
 
 ## Extending
 

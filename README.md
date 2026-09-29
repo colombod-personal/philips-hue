@@ -55,6 +55,15 @@ console.log(JSON.stringify(bridge.snapshot()));                 // everything, a
 
 Everything an agent needs is available as plain JSON via `snapshot()` (see `packages/core/src/model/snapshot.ts`), and raw CLIP v2 resources remain reachable through `HueClient` when you need something the model does not wrap.
 
+## Digital twin
+
+Development and tests run against a **digital twin** of your bridge, not a hand-written mock: `hue-twin record` captures the real bridge (config, certificate, all resources, and the event stream over time) into a recording; `hue-twin serve` replays it as a local bridge with the same endpoints, timeline replay at any speed, write handling and a control API for scripting scenarios. See [docs/digital-twin.md](docs/digital-twin.md).
+
+```sh
+node packages/core/dist/twin/cli.js record --out recordings/home.json --duration 600
+node packages/core/dist/twin/cli.js serve --recording recordings/home.json --speed 10
+```
+
 ## MCP server
 
 ```json

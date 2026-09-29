@@ -11,6 +11,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./twin": {
+      "types": "./dist/twin/index.d.ts",
+      "import": "./dist/twin/index.js"
+    },
     "./test-support": {
       "types": "./dist/test-support/index.d.ts",
       "import": "./dist/test-support/index.js"
@@ -24,7 +28,7 @@
     "node": ">=20.10"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && chmod +x dist/twin/cli.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --import tsx --test src/__tests__/*.test.ts",
     "lint": "tsc -p tsconfig.json --noEmit"
@@ -42,5 +46,8 @@
     "type": "git",
     "url": "https://github.com/colombod-personal/philips-hue",
     "directory": "packages/core"
+  },
+  "bin": {
+    "hue-twin": "./dist/twin/cli.js"
   }
 }

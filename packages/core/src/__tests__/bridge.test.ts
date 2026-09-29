@@ -1,6 +1,6 @@
 import { test, describe, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { startFakeBridge, type FakeBridge } from '../test-support/fake-bridge.js';
+import { startFakeBridge, type FakeBridge } from '../test-support/index.js';
 import { IDS } from '../test-support/fixtures.js';
 import { HueClient } from '../client.js';
 import { HueBridge } from '../model/bridge.js';
@@ -79,7 +79,7 @@ describe('against a fake HTTPS bridge', () => {
     assert.ok(attempts >= 2);
     assert.equal(creds.bridgeId, fake.bridgeId);
     assert.equal(creds.applicationKey, fake.applicationKey);
-    assert.equal(creds.clientKey, 'ABCDEF0123456789ABCDEF0123456789');
+    assert.match(creds.clientKey ?? '', /^[A-Z0-9]{32}$/);
     assert.equal(creds.fingerprint, fake.fingerprint);
     assert.equal(creds.deviceType, 'hue-sdk-tests#ci');
     assert.equal(creds.modelId, 'BSB002');
@@ -179,7 +179,7 @@ describe('against a fake HTTPS bridge', () => {
       assert.equal(bridge.resolveDevice('Hallway sensor')!.sensor('motion')?.value, true);
       assert.equal(bridge.resolveDevice('Hallway sensor')!.sensor('motion')?.changed, '2026-09-28T10:00:00Z');
       assert.ok(changes.includes('light')); // our own PUTs were echoed as events
-      assert.equal(lamp.brightness, 20);
+      assert.equal(lamp.brightness, 100); // the Concentrate scene recall above set the lamp to 100, as the real bridge would
     } finally {
       bridge.close();
     }
