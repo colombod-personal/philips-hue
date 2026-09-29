@@ -1,21 +1,15 @@
 {
-  "version": 1,
-  "recordedAt": "2026-09-28T09:00:00.000Z",
-  "durationMs": 20000,
-  "label": "sample: office, someone walks in, presses the dimmer, leaves",
-  "bridge": {
-    "config": {
-      "name": "Philips hue",
-      "datastoreversion": "170",
-      "swversion": "1966060010",
-      "apiversion": "1.66.0",
-      "mac": "00:17:88:12:34:56",
-      "bridgeid": "001788FFFE123456",
-      "factorynew": false,
-      "replacesbridgeid": null,
-      "modelid": "BSB002",
-      "starterkitid": ""
-    }
+  "config": {
+    "name": "Philips hue",
+    "datastoreversion": "170",
+    "swversion": "1966060010",
+    "apiversion": "1.66.0",
+    "mac": "00:17:88:12:34:56",
+    "bridgeid": "001788FFFE123456",
+    "factorynew": false,
+    "replacesbridgeid": null,
+    "modelid": "BSB002",
+    "starterkitid": ""
   },
   "resources": [
     {
@@ -56,6 +50,15 @@
       "time_zone": {
         "time_zone": "Europe/Amsterdam"
       }
+    },
+    {
+      "id": "zb000000-0000-4000-8000-000000000003",
+      "type": "zigbee_connectivity",
+      "owner": {
+        "rid": "b0000000-0000-4000-8000-000000000001",
+        "rtype": "device"
+      },
+      "status": "connected"
     },
     {
       "id": "d0000000-0000-4000-8000-000000000010",
@@ -591,7 +594,7 @@
   ],
   "events": [
     {
-      "offsetMs": 1000,
+      "offset_ms": 1000,
       "event": {
         "id": "sample-1000",
         "creationtime": "2026-09-28T09:00:00Z",
@@ -616,7 +619,7 @@
       }
     },
     {
-      "offsetMs": 1500,
+      "offset_ms": 1500,
       "event": {
         "id": "sample-1500",
         "creationtime": "2026-09-28T09:00:00Z",
@@ -641,7 +644,7 @@
       }
     },
     {
-      "offsetMs": 4000,
+      "offset_ms": 4000,
       "event": {
         "id": "sample-4000",
         "creationtime": "2026-09-28T09:00:00Z",
@@ -665,7 +668,7 @@
       }
     },
     {
-      "offsetMs": 4200,
+      "offset_ms": 4200,
       "event": {
         "id": "sample-4200",
         "creationtime": "2026-09-28T09:00:00Z",
@@ -689,7 +692,7 @@
       }
     },
     {
-      "offsetMs": 4300,
+      "offset_ms": 4300,
       "event": {
         "id": "sample-4300",
         "creationtime": "2026-09-28T09:00:00Z",
@@ -727,7 +730,7 @@
       }
     },
     {
-      "offsetMs": 9000,
+      "offset_ms": 9000,
       "event": {
         "id": "sample-9000",
         "creationtime": "2026-09-28T09:00:00Z",
@@ -752,7 +755,7 @@
       }
     },
     {
-      "offsetMs": 12000,
+      "offset_ms": 12000,
       "event": {
         "id": "sample-12000",
         "creationtime": "2026-09-28T09:00:00Z",
@@ -777,7 +780,7 @@
       }
     },
     {
-      "offsetMs": 15000,
+      "offset_ms": 15000,
       "event": {
         "id": "sample-15000",
         "creationtime": "2026-09-28T09:00:00Z",
@@ -796,7 +799,7 @@
       }
     },
     {
-      "offsetMs": 17000,
+      "offset_ms": 17000,
       "event": {
         "id": "sample-17000",
         "creationtime": "2026-09-28T09:00:00Z",
@@ -815,7 +818,7 @@
       }
     },
     {
-      "offsetMs": 19000,
+      "offset_ms": 19000,
       "event": {
         "id": "sample-19000",
         "creationtime": "2026-09-28T09:00:00Z",
@@ -846,5 +849,12 @@
         ]
       }
     }
-  ]
+  ],
+  "duration_ms": 20000,
+  "recorded_at": "2026-09-28T09:00:00+00:00",
+  "label": "sample: office, someone walks in, presses the dimmer, leaves",
+  "host": null,
+  "certificate": null,
+  "requests": [],
+  "version": 1
 }

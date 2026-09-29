@@ -18,11 +18,11 @@ OpenClaw does not ship a Hue integration in its core; the community skill `openh
 
 What we took from it:
 
-- The skill format and gating (`metadata.openclaw.requires.bins`, `install` specs) — `skills/hue/SKILL.md` follows the same conventions so it can be published to ClawHub.
+- The skill format and gating (`metadata.openclaw.requires.bins`, `install` specs), should an agent-facing wrapper be published later.
 - The command vocabulary agents already know (`discover`, `setup`/`pair`, `get`/`set`, `--json`).
 - The "press the button during setup" UX note.
 
-What we did differently: devices and sensors are first-class, events are streamed, certificate pinning is on by default, and everything is available as a library and as MCP tools, not only a CLI.
+What we did differently: devices and sensors are first-class, events are streamed, certificate pinning is on by default, everything is a library API with plain-data snapshots, and development runs against a digital twin recorded from the real bridge rather than a mock.
 
 ## Licensing
 
@@ -30,12 +30,12 @@ What we did differently: devices and sensors are first-class, events are streame
 | --- | --- | --- |
 | OpenHue CLI / openhue-go / openhue-api | Apache-2.0 | Reference only; no code copied (Apache-2.0 code would drag its NOTICE/patent terms into an MIT repo). |
 | hue-ex (Elixir) | Apache-2.0 | Design reference (pairing retry loop, fingerprint persistence, dead-stream detection). |
-| `@modelcontextprotocol/sdk` | MIT | Runtime dependency of `@hue-sdk/mcp`. |
-| `zod` | MIT | Runtime dependency of `@hue-sdk/mcp`. |
-| `typescript`, `tsx`, `@types/node` | Apache-2.0 / MIT / MIT | Dev-only. |
+| aiohue (Home Assistant) | Apache-2.0 | Not used; noted as the main Python alternative. |
+| python-zeroconf | LGPL-2.1 | Not used (copyleft); mDNS is implemented on stdlib sockets instead. |
+| `pytest`, `ruff`, `mypy` | MIT | Dev-only. |
 | Signify Hue bridge root CA | Signify, developer-portal terms | Not vendored; user-supplied via `HUE_CA_FILE`. |
 
-`@hue-sdk/core` and `@hue-sdk/cli` have **no runtime dependencies**.
+The runtime package has **no dependencies**.
 
 ## Sources
 

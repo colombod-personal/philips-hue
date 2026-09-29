@@ -1,31 +1,31 @@
-# philips-hue — working notes for coding agents
+# hue-sdk — working notes for coding agents
 
-Device-centric Philips Hue SDK (CLIP v2) for agents and applications. MIT licensed; only MIT-compatible dependencies are allowed (see `docs/research.md` for the licensing table).
+Device-centric Philips Hue SDK (CLIP v2) for humans and agents, in Python, plus a bridge digital twin. MIT licensed; only MIT-compatible dependencies are allowed (see `docs/research.md`) and the runtime package has none.
 
 ## Layout
 
-- `packages/core` — `@hue-sdk/core`, zero runtime dependencies. Discovery (mDNS + cloud), pairing (link button), TLS pinning, CLIP v2 client, SSE event stream, and the device model (`HueBridge` → `HueDevice` → lights/sensors).
-- `packages/cli` — `@hue-sdk/cli`, the `hue` command. Every command has `--json`.
-- `packages/mcp` — `@hue-sdk/mcp`, a stdio MCP server exposing the same model as tools.
-- `skills/hue` — an agent skill (OpenClaw / Claude Code style `SKILL.md`) that teaches an agent to use the CLI.
-- `packages/core/src/twin` — the digital twin: `recordBridge()` captures a real bridge into a recording, `BridgeSimulator` replays it locally (`hue-twin record|serve`).
+- `src/hue_sdk/` — the SDK. Protocol layer: `tls.py`, `transport.py`, `discovery/`, `pairing.py`, `events.py`, `client.py`, `credentials.py`, `color.py`. Model layer: `model/` (`HueBridge` → `HueDevice` → `HueLight` / sensor snapshots, `HueGroup`, `HueScene`, `snapshot.py` dataclasses).
+- `src/hue_sdk/twin/` — the digital twin: `recording.py` (format), `recorder.py` (`record_bridge`), `simulator.py` (`BridgeSimulator`), `sample.py`/`fixtures.py` (hand-written stand-in), `cli.py` (`hue-twin pair|record|serve|sample`).
+- `tests/` — pytest; every test runs against `BridgeSimulator` (fixtures in `tests/conftest.py`).
+- `recordings/` — twin recordings; commit real captures here.
 - `docs/` — architecture, digital twin, research notes, security model.
 
 ## Commands
 
 ```sh
-pnpm install
-pnpm build        # core must be built before cli/mcp tests (they import dist via workspace links)
-pnpm test         # node:test, runs against an in-process fake bridge (needs `openssl` on PATH)
-pnpm typecheck
+uv sync --dev
+uv run pytest
+uv run ruff check . && uv run ruff format . && uv run mypy
+uv run hue-twin serve --speed 10      # local bridge to poke at
 ```
 
 ## Conventions
 
-- TypeScript, ESM, `strict` + `exactOptionalPropertyTypes`. Keep `packages/core` dependency-free.
-- CLIP v2 resource types live in `packages/core/src/types.ts`; keep them permissive (index signatures) because the bridge adds fields over firmware releases.
-- Anything agents consume must be plain JSON: add to `packages/core/src/model/snapshot.ts`, not to class shapes.
-- Errors are `HueError` with a stable `code`; never throw bare strings.
-- Never log or print application keys; the CLI redacts them.
-- Tests must not need real hardware: they run against the digital twin (`packages/core/src/twin/`, `BridgeSimulator`) fed by a recording. Prefer real captures under `recordings/` over the hand-written `sampleRecording()`; extend `fixtures.ts` only for shapes no capture covers yet.
-- No `rejectUnauthorized: false` outside `identify` (which exists to learn the certificate to pin) and the explicit `insecure` option.
+- Python 3.11+, stdlib only at runtime. `mypy --strict` and `ruff` must pass; format with `ruff format`.
+- Raw CLIP v2 resources stay plain `dict`s (`hue_sdk.types.Resource`); the bridge adds fields across firmware releases, so never drop unknown keys.
+- Anything humans or agents consume is a dataclass in `model/snapshot.py` with `to_dict()`. Add fields there; do not expose class internals.
+- Errors are `HueError` with a stable `code`; never raise bare strings or generic exceptions from public APIs.
+- Never log or print application keys. Recordings must be scrubbed (`redact_secrets`).
+- Tests must not need hardware: use the twin. Prefer real captures under `recordings/` over `sample_recording()`; extend `fixtures.py` only for shapes no capture covers yet.
+- No `CERT_NONE` without pinning outside `fetch_bridge_config` (which exists to learn the certificate to pin) and the explicit `insecure` option.
+- The SDK is synchronous by design (simple for humans and REPLs); the event stream runs on a daemon thread and `HueBridge` emits callbacks. Keep it that way unless an async layer is added as a separate module.

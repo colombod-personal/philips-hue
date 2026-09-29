@@ -1,10 +1,16 @@
-node_modules/
+__pycache__/
+*.pyc
+.venv/
 dist/
-*.tsbuildinfo
+build/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .DS_Store
-coverage/
 *.log
 .env
 .env.*
 # local bridge credentials must never be committed
 hue-credentials*.json
+credentials.json

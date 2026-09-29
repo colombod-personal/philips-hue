@@ -1,0 +1,64 @@
+[project]
+name = "hue-sdk"
+version = "0.1.0"
+description = "Device-centric Philips Hue (CLIP v2) SDK for humans and agents, with a bridge digital twin. Zero runtime dependencies."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [{ name = "Diego Colombo" }]
+keywords = ["philips-hue", "hue", "clip-v2", "smart-home", "sensors", "agents", "digital-twin"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Home Automation",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/colombod-personal/philips-hue"
+
+[project.scripts]
+hue-twin = "hue_sdk.twin.cli:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3",
+  "mypy>=1.14",
+  "ruff>=0.9",
+]
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hue_sdk"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 170
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["RUF012", "SIM108", "SIM105", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/hue_sdk/twin/fixtures.py" = ["E501"]
+"src/hue_sdk/twin/sample.py" = ["E501"]
+"tests/*" = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unreachable = true
+mypy_path = "src"
+packages = ["hue_sdk"]
